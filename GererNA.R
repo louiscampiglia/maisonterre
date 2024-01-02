@@ -78,6 +78,43 @@ pyranometres$Pyranometre_Sud_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Sud
 #pyranometres ne contient plus de NA
 
 
+#PYRANOMETRES
+# Interpolation pour les valeurs manquantes au milieu de la série temporelle
+pyranometres$Pyranometre_Est_Wm.mean<- na.approx(pyranometres$Pyranometre_Est_Wm.mean, na.rm = FALSE)
+pyranometres$Pyranometre_Nord_Wm.mean <- na.approx(pyranometres$Pyranometre_Nord_Wm.mean, na.rm = FALSE)
+pyranometres$Pyranometre_Ouest_Wm.mean <- na.approx(pyranometres$Pyranometre_Ouest_Wm.mean, na.rm = FALSE)
+pyranometres$Pyranometre_Sud_Wm.mean<- na.approx(pyranometres$Pyranometre_Sud_Wm.mean, na.rm = FALSE)
+#Imputation par la moyenne pour les NA ( 0.16%)
+pyranometres$Pyranometre_Est_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Est_Wm.mean, na.rm = TRUE)
+pyranometres$Pyranometre_Nord_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Nord_Wm.mean, na.rm = TRUE)
+pyranometres$Pyranometre_Ouest_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Ouest_Wm.mean, na.rm = TRUE)
+pyranometres$Pyranometre_Sud_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Sud_Wm.mean, na.rm = TRUE)
+#pyranometres ne contient plus de NA
+
+
+#TEMPERATURE
+# Interpolation pour les valeurs manquantes au milieu de la série temporelle
+temperature$Temperature_Interieur_Sud.mean<- na.approx(temperature$Temperature_Interieur_Sud.mean, na.rm = FALSE)
+temperature$Temperature_Interieur_Nord.mean <- na.approx(temperature$Temperature_Interieur_Nord.mean , na.rm = FALSE)
+temperature$Temperature_E4000.mean <- na.approx(temperature$Temperature_E4000.mean, na.rm = FALSE)
+temperature$Temperature_ressentie_E4000.mean<- na.approx(temperature$Temperature_ressentie_E4000.mean, na.rm = FALSE)
+temperature$Station_Meteo_Text <- na.approx(temperature$Station_Meteo_Text, na.rm = FALSE)
+temperature$Mur_Temp_1_1.mean <- na.approx(temperature$Mur_Temp_1_1.mean, na.rm = FALSE)
+#Imputation par la moyenne pour les NA (2.80%)
+temperature$Temperature_Interieur_Sud.mean[1:872] <- mean(temperature$Temperature_Interieur_Sud.mean, na.rm = TRUE)
+temperature$Temperature_Interieur_Sud.mean[1281357] <- mean(temperature$Temperature_Interieur_Sud.mean, na.rm = TRUE)
+temperature$Temperature_Interieur_Nord.mean[1:871] <- mean(temperature$Temperature_Interieur_Nord.mean, na.rm = TRUE)
+temperature$Temperature_Interieur_Nord.mean[1281357] <- mean(temperature$Temperature_Interieur_Nord.mean, na.rm = TRUE)
+temperature$Temperature_E4000.mean[1:870] <- mean(temperature$Temperature_E4000.mean, na.rm = TRUE)
+temperature$Temperature_E4000.mean[1281357] <- mean(temperature$Temperature_E4000.mean, na.rm = TRUE)
+temperature$Temperature_ressentie_E4000.mean[1:870] <- mean(temperature$Temperature_ressentie_E4000.mean, na.rm = TRUE)
+temperature$Temperature_ressentie_E4000.mean[1281314:1281357] <- mean(temperature$Temperature_ressentie_E4000.mean, na.rm = TRUE)
+temperature$Station_Meteo_Text[1:4033] <- mean(temperature$Station_Meteo_Text, na.rm = TRUE)
+temperature$Station_Meteo_Text[1281314:1281357] <- mean(temperature$Station_Meteo_Text, na.rm = TRUE)
+temperature$Mur_Temp_1_1.mean[1:31143] <- mean(temperature$Mur_Temp_1_1.mean, na.rm = TRUE)
+temperature$Mur_Temp_1_1.mean[1281357] <- mean(temperature$Mur_Temp_1_1.mean, na.rm = TRUE)
+#pyranometres ne contient plus de NA
+
 
 #ENERGY
 # Interpolation pour les valeurs manquantes au milieu de la série temporelle
