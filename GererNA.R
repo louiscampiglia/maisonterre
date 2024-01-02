@@ -40,6 +40,43 @@ mur_1$Mur_Temp_1_2.mean[indices_a_imputer] <- predict(model_2, newdata = mur_1[i
 model_3 <- lm(Mur_Temp_1_2.mean ~ Mur_Temp_1_3.mean, data = mur_1, subset = !is.na(Mur_Temp_1_2.mean))
 mur_1$Mur_Temp_1_2.mean[indices_a_imputer] <- predict(model_3, newdata = mur_1[indices_a_imputer, ])
 
+#MUR 2
+# Interpolation pour les valeurs manquantes au milieu de la série temporelle
+mur_2$Mur_Temp_2_2.mean <- na.approx(mur_2$Mur_Temp_2_2.mean, na.rm = FALSE)
+mur_2$Mur_Temp_2_3.mean <- na.approx(mur_2$Mur_Temp_2_3.mean, na.rm = FALSE)
+#Imputation par la moyenne pour les NA (6%)
+mur_2$Mur_Temp_2_2.mean[1:33095] <- mean(mur_2$Mur_Temp_2_2.mean, na.rm = TRUE)
+mur_2$Mur_Temp_2_3.mean[1:33095] <- mean(mur_2$Mur_Temp_2_3.mean, na.rm = TRUE)
+#mur_2 ne contient plus de NA
+
+
+#TOIT
+# Interpolation pour les valeurs manquantes au milieu de la série temporelle
+toit$Mur_Temp_toit_1.mean<- na.approx(toit$Mur_Temp_toit_1.mean, na.rm = FALSE)
+toit$Mur_Temp_toit_2.mean <- na.approx(toit$Mur_Temp_toit_2.mean, na.rm = FALSE)
+toit$Mur_Temp_toit_3.mean <- na.approx(toit$Mur_Temp_toit_3.mean, na.rm = FALSE)
+#Problème il y a bcp de NA au début (environ 97% des lignes)
+# On supprime les NA
+# Suppression des lignes en fonction des indices spécifiques
+indices_a_supprimer <- c(1:510319)
+toit <- toit %>%
+  slice(-indices_a_supprimer)
+#toit ne contient plus de NA
+
+
+#PYRANOMETRES
+# Interpolation pour les valeurs manquantes au milieu de la série temporelle
+pyranometres$Pyranometre_Est_Wm.mean<- na.approx(pyranometres$Pyranometre_Est_Wm.mean, na.rm = FALSE)
+pyranometres$Pyranometre_Nord_Wm.mean <- na.approx(pyranometres$Pyranometre_Nord_Wm.mean, na.rm = FALSE)
+pyranometres$Pyranometre_Ouest_Wm.mean <- na.approx(pyranometres$Pyranometre_Ouest_Wm.mean, na.rm = FALSE)
+pyranometres$Pyranometre_Sud_Wm.mean<- na.approx(pyranometres$Pyranometre_Sud_Wm.mean, na.rm = FALSE)
+#Imputation par la moyenne pour les NA ( 0.16%)
+pyranometres$Pyranometre_Est_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Est_Wm.mean, na.rm = TRUE)
+pyranometres$Pyranometre_Nord_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Nord_Wm.mean, na.rm = TRUE)
+pyranometres$Pyranometre_Ouest_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Ouest_Wm.mean, na.rm = TRUE)
+pyranometres$Pyranometre_Sud_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Sud_Wm.mean, na.rm = TRUE)
+#pyranometres ne contient plus de NA
+
 
 
 #ENERGY
