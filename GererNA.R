@@ -130,3 +130,17 @@ energySansVMC$Energie_Prises[2770828] <- mean(energySansVMC$Energie_Prises, na.r
 energySansVMC$Energie_Convecteurs[1:3] <- mean(energySansVMC$Energie_Convecteurs, na.rm = TRUE)
 #ou bien on supprime les lignes car il y en a pas bcp?
 #energySansVMC ne contient plus de NA
+
+
+#HUMIDITE
+# Interpolation pour les valeurs manquantes au milieu de la série temporelle
+humidite$Humidite_Interieur_Sud.mean <- na.approx(humidite$Humidite_Interieur_Sud.mean, na.rm = FALSE)
+humidite$Humidite_Interieur_Nord.mean <- na.approx(humidite$Humidite_Interieur_Nord.mean, na.rm = FALSE)
+humidite$Humidite_RELATIVE_E4000.mean <- na.approx(humidite$Humidite_RELATIVE_E4000.mean, na.rm = FALSE)
+humidite$Humidite_ABSOLUE_E4000.mean <- na.approx(humidite$Humidite_ABSOLUE_E4000.mean, na.rm = FALSE)
+#Imputation par la moyenne pour les NA (2.67%)
+humidite$Humidite_Interieur_Sud.mean[1:293] <- mean(humidite$Humidite_Interieur_Sud.mean, na.rm = TRUE)
+humidite$Humidite_Interieur_Nord.mean[1:292] <- mean(humidite$Humidite_Interieur_Nord.mean, na.rm = TRUE)
+humidite$Humidite_RELATIVE_E4000.mean[1:292] <- mean(humidite$Humidite_RELATIVE_E4000.mean, na.rm = TRUE)
+humidite$Humidite_ABSOLUE_E4000.mean[1:292] <- mean(humidite$Humidite_ABSOLUE_E4000.mean, na.rm = TRUE)
+#humidite ne contient plus de NA
