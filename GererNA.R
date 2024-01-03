@@ -78,19 +78,6 @@ pyranometres$Pyranometre_Sud_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Sud
 #pyranometres ne contient plus de NA
 
 
-#PYRANOMETRES
-# Interpolation pour les valeurs manquantes au milieu de la série temporelle
-pyranometres$Pyranometre_Est_Wm.mean<- na.approx(pyranometres$Pyranometre_Est_Wm.mean, na.rm = FALSE)
-pyranometres$Pyranometre_Nord_Wm.mean <- na.approx(pyranometres$Pyranometre_Nord_Wm.mean, na.rm = FALSE)
-pyranometres$Pyranometre_Ouest_Wm.mean <- na.approx(pyranometres$Pyranometre_Ouest_Wm.mean, na.rm = FALSE)
-pyranometres$Pyranometre_Sud_Wm.mean<- na.approx(pyranometres$Pyranometre_Sud_Wm.mean, na.rm = FALSE)
-#Imputation par la moyenne pour les NA ( 0.16%)
-pyranometres$Pyranometre_Est_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Est_Wm.mean, na.rm = TRUE)
-pyranometres$Pyranometre_Nord_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Nord_Wm.mean, na.rm = TRUE)
-pyranometres$Pyranometre_Ouest_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Ouest_Wm.mean, na.rm = TRUE)
-pyranometres$Pyranometre_Sud_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Sud_Wm.mean, na.rm = TRUE)
-#pyranometres ne contient plus de NA
-
 
 #TEMPERATURE
 # Interpolation pour les valeurs manquantes au milieu de la série temporelle
