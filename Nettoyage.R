@@ -101,7 +101,8 @@ convecteurs[convecteurs == "null"] <- NA
 convecteurs$ï..Time <- as.POSIXct(convecteurs$ï..Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
 # Remplacer "â€¯" par rien dans la colonne Puissance_Convecteurs(KW) et convertir en double
 convecteurs$Puissance_Convecteurs <- as.numeric(gsub("â€¯", "", convecteurs$Puissance_Convecteurs))
-
+# Supprimer les virgules des colonnes
+convecteurs$Puissance_Convecteurs <- gsub(",", ".", convecteurs$Puissance_Convecteurs)
 
 
 #ENERGY
