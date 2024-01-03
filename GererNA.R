@@ -83,6 +83,8 @@ pyranometres$Pyranometre_Sud_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Sud
 
 
 #TEMPERATURE
+#On a un faible nombre de valeurs de température intérieure absurdes (de -20°C à -250°C), on les rajoute aux NA
+temperature$Mur_Temp_1_1.mean[temperature$Mur_Temp_1_1.mean<0]<-NA
 # Interpolation pour les valeurs manquantes au milieu de la série temporelle
 temperature$Temperature_Interieur_Sud.mean<- na.approx(temperature$Temperature_Interieur_Sud.mean, na.rm = FALSE)
 temperature$Temperature_Interieur_Nord.mean <- na.approx(temperature$Temperature_Interieur_Nord.mean , na.rm = FALSE)
