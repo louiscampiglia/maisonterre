@@ -51,6 +51,11 @@ toit$ï..Time <- as.POSIXct(toit$ï..Time, format = "%Y-%m-%dT%H:%M:%S", tz = "U
 toit$Mur_Temp_toit_1.mean<- as.numeric(gsub(",", ".", toit$Mur_Temp_toit_1.mean))
 toit$Mur_Temp_toit_2.mean<- as.numeric(gsub(",", ".", toit$Mur_Temp_toit_2.mean))
 toit$Mur_Temp_toit_3.mean<- as.numeric(gsub(",", ".", toit$Mur_Temp_toit_3.mean))
+#inversition des numéros de capteurs 1 et 3 du toit pour que ca concorde avec les murs :
+save_toit_1 <- toit$Mur_Temp_toit_1.mean
+toit$Mur_Temp_toit_1.mean <- toit$Mur_Temp_toit_3.mean
+toit$Mur_Temp_toit_3.mean <- save_toit_1
+
 
 #PYRANOMETRES
 pyranometres=read.csv('pyranomètres.csv',sep=";")
@@ -63,7 +68,6 @@ pyranometres$Pyranometre_Est_Wm.mean<- as.numeric(gsub(",", ".", pyranometres$Py
 pyranometres$Pyranometre_Nord_Wm.mean<- as.numeric(gsub(",", ".", pyranometres$Pyranometre_Nord_Wm.mean))
 pyranometres$Pyranometre_Ouest_Wm.mean<- as.numeric(gsub(",", ".", pyranometres$Pyranometre_Ouest_Wm.mean))
 pyranometres$Pyranometre_Sud_Wm.mean<- as.numeric(gsub(",", ".", pyranometres$Pyranometre_Sud_Wm.mean))
-
 
 
 #TEMPERATURE
