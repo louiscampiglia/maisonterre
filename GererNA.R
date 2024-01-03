@@ -39,6 +39,8 @@ mur_1$Mur_Temp_1_1.mean[48004:59322] <- mean(mur_1$Mur_Temp_1_1.mean, na.rm = TR
 mur_1$Mur_Temp_1_2.mean[48004:59322] <- mean(mur_1$Mur_Temp_1_2.mean, na.rm = TRUE)
 mur_1$Mur_Temp_1_3.mean[48004:59322] <- mean(mur_1$Mur_Temp_1_3.mean, na.rm = TRUE)
 #mur_1 ne contient plus de NA.
+#On a 2 valeurs de température intérieure absurdes (-20°C et -60°C), on les remplaces par la moyenne
+mur_1$Mur_Temp_1_1.mean[mur_1$Mur_Temp_1_1.mean<0]<-mean(mur_1$Mur_Temp_1_1.mean, na.rm = TRUE)
 
 #MUR 2
 # Interpolation pour les valeurs manquantes au milieu de la série temporelle
