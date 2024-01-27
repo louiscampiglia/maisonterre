@@ -109,18 +109,17 @@ temperature$Mur_Temp_1_1.mean[1281357] <- mean(temperature$Mur_Temp_1_1.mean, na
 
 
 #ENERGY
-# Interpolation pour les valeurs manquantes au milieu de la série temporelle
-energy$Energie_Eclairage <- na.approx(energy$Energie_Eclairage, na.rm = FALSE)
-energy$Energie_Prises <- na.approx(energy$Energie_Prises, na.rm = FALSE)
-energy$Energie_Convecteurs <- na.approx(energy$Energie_Convecteurs, na.rm = FALSE)
-#Il y a que des zéros et des NA dans Energie_VMC donc on la supprime
-energySansVMC <- subset(energy, select = -c(Energie_VMC))
-# Imputation par la moyenne pour les valeurs manquantes au début ou a la fin
-energySansVMC$Energie_Eclairage[2770827:2770828] <- mean(energySansVMC$Energie_Eclairage, na.rm = TRUE)
-energySansVMC$Energie_Prises[1] <- mean(energySansVMC$Energie_Prises, na.rm = TRUE)
-energySansVMC$Energie_Prises[2770828] <- mean(energySansVMC$Energie_Prises, na.rm = TRUE)
-energySansVMC$Energie_Convecteurs[1:3] <- mean(energySansVMC$Energie_Convecteurs, na.rm = TRUE)
-#ou bien on supprime les lignes car il y en a pas bcp?
+# Regrouper les données par timestamp et combiner les valeurs dans chaque groupe
+#En fait il y avait plusieurs lignes pour le meme timestamp donc beaucoup de NA évitables.
+energy_grouped <- energy %>%
+  group_by(`ï..Time`) %>%
+  summarise_all(~if(all(is.na(.))) NA else first(na.omit(.)))
+# Interpolation pour les valeurs manquantes au milieu de la sÃ©rie temporelle
+energy_grouped$Energie_Eclairage <- na.approx(energy_grouped$Energie_Eclairage, na.rm = FALSE)
+energy_grouped$Energie_Prises <- na.approx(energy_grouped$Energie_Prises, na.rm = FALSE)
+energy_grouped$Energie_Convecteurs <- na.approx(energy_grouped$Energie_Convecteurs, na.rm = FALSE)
+#Il y a que des zÃ©ros et des NA dans Energie_VMC donc on la supprime
+energySansVMC <- subset(energy_grouped, select = -c(Energie_VMC))
 #energySansVMC ne contient plus de NA
 
 
