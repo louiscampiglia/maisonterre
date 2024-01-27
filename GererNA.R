@@ -83,29 +83,63 @@ pyranometres$Pyranometre_Sud_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Sud
 
 
 #TEMPERATURE
-#On a un faible nombre de valeurs de température intérieure absurdes (de -20°C à -250°C), on les rajoute aux NA
-temperature$Mur_Temp_1_1.mean[temperature$Mur_Temp_1_1.mean<0]<-NA
-# Interpolation pour les valeurs manquantes au milieu de la série temporelle
-temperature$Temperature_Interieur_Sud.mean<- na.approx(temperature$Temperature_Interieur_Sud.mean, na.rm = FALSE)
-temperature$Temperature_Interieur_Nord.mean <- na.approx(temperature$Temperature_Interieur_Nord.mean , na.rm = FALSE)
-temperature$Temperature_E4000.mean <- na.approx(temperature$Temperature_E4000.mean, na.rm = FALSE)
-temperature$Temperature_ressentie_E4000.mean<- na.approx(temperature$Temperature_ressentie_E4000.mean, na.rm = FALSE)
-temperature$Station_Meteo_Text <- na.approx(temperature$Station_Meteo_Text, na.rm = FALSE)
-temperature$Mur_Temp_1_1.mean <- na.approx(temperature$Mur_Temp_1_1.mean, na.rm = FALSE)
-#Imputation par la moyenne pour les NA (2.80%)
-temperature$Temperature_Interieur_Sud.mean[1:872] <- mean(temperature$Temperature_Interieur_Sud.mean, na.rm = TRUE)
-temperature$Temperature_Interieur_Sud.mean[1281357] <- mean(temperature$Temperature_Interieur_Sud.mean, na.rm = TRUE)
-temperature$Temperature_Interieur_Nord.mean[1:871] <- mean(temperature$Temperature_Interieur_Nord.mean, na.rm = TRUE)
-temperature$Temperature_Interieur_Nord.mean[1281357] <- mean(temperature$Temperature_Interieur_Nord.mean, na.rm = TRUE)
-temperature$Temperature_E4000.mean[1:870] <- mean(temperature$Temperature_E4000.mean, na.rm = TRUE)
-temperature$Temperature_E4000.mean[1281357] <- mean(temperature$Temperature_E4000.mean, na.rm = TRUE)
-temperature$Temperature_ressentie_E4000.mean[1:870] <- mean(temperature$Temperature_ressentie_E4000.mean, na.rm = TRUE)
-temperature$Temperature_ressentie_E4000.mean[1281314:1281357] <- mean(temperature$Temperature_ressentie_E4000.mean, na.rm = TRUE)
-temperature$Station_Meteo_Text[1:4033] <- mean(temperature$Station_Meteo_Text, na.rm = TRUE)
-temperature$Station_Meteo_Text[1281314:1281357] <- mean(temperature$Station_Meteo_Text, na.rm = TRUE)
-temperature$Mur_Temp_1_1.mean[1:31143] <- mean(temperature$Mur_Temp_1_1.mean, na.rm = TRUE)
-temperature$Mur_Temp_1_1.mean[1281357] <- mean(temperature$Mur_Temp_1_1.mean, na.rm = TRUE)
-#pyranometres ne contient plus de NA
+#On a un faible nombre de valeurs de tempÃ©rature intÃ©rieure absurdes (de -20Â°C Ã  -250Â°C), on les rajoute aux NA
+#temperature$Mur_Temp_1_1.mean[temperature$Mur_Temp_1_1.mean<0]<-NA
+
+# Définir une fonction pour remplir les valeurs manquantes dans chaque groupe
+fill_group <- function(data) {
+  filled_data <- data %>%
+    summarise(across(starts_with("Temperature"), mean, na.rm = TRUE), 
+              `Mur_Temp_1_1.mean` = first(`Mur_Temp_1_1.mean`))
+  return(filled_data)
+}
+
+# Diviser les données en groupes plus petits
+group_size <- 1000  # Vous pouvez ajuster la taille du groupe selon vos besoins
+num_groups <- nrow(temp_5min) %/% group_size + 1
+
+filled_groups <- lapply(1:num_groups, function(i) {
+  start_index <- (i - 1) * group_size + 1
+  end_index <- min(i * group_size, nrow(temp_5min))
+  group_data <- temp_5min[start_index:end_index, ]
+  filled_group <- fill_group(group_data)
+  return(filled_group)
+})
+
+# Fusionner les groupes remplis en un seul dataframe
+temp_5min_filled <- bind_rows(filled_groups)
+
+# Ajouter la variable de temps
+start_time <- min(temp_5min$`ï..Time`)
+end_time <- max(temp_5min$`ï..Time`)
+time_sequence <- seq(from = start_time, to = end_time, by = 300)  # Créer une séquence de temps toutes les 5 minutes
+temp_5min_filled$`ï..Time` <- time_sequence[seq_along(temp_5min_filled$`Mur_Temp_1_1.mean`)]
+
+#On a des données toutes les 5 min (le temps est à la fin)
+ # Interpolation pour les valeurs manquantes au milieu de la sÃ©rie temporelle
+temp_5min_filled$Temperature_Interieur_Sud.mean<- na.approx(temp_5min_filled$Temperature_Interieur_Sud.mean, na.rm = FALSE)
+temp_5min_filled$Temperature_Interieur_Nord.mean <- na.approx(temp_5min_filled$Temperature_Interieur_Nord.mean , na.rm = FALSE)
+temp_5min_filled$Temperature_E4000.mean <- na.approx(temp_5min_filled$Temperature_E4000.mean, na.rm = FALSE)
+temp_5min_filled$Temperature_ressentie_E4000.mean<- na.approx(temp_5min_filled$Temperature_ressentie_E4000.mean, na.rm = FALSE)
+temp_5min_filled$Station_Meteo_Text <- na.approx(temp_5min_filled$Station_Meteo_Text, na.rm = FALSE)
+temp_5min_filled$Mur_Temp_1_1.mean <- na.approx(temp_5min_filled$Mur_Temp_1_1.mean, na.rm = FALSE)
+
+# #Imputation par la moyenne pour les NA (2.80%)
+# temperature$Temperature_Interieur_Sud.mean[1:872] <- mean(temperature$Temperature_Interieur_Sud.mean, na.rm = TRUE)
+# temperature$Temperature_Interieur_Sud.mean[1281357] <- mean(temperature$Temperature_Interieur_Sud.mean, na.rm = TRUE)
+# temperature$Temperature_Interieur_Nord.mean[1:871] <- mean(temperature$Temperature_Interieur_Nord.mean, na.rm = TRUE)
+# temperature$Temperature_Interieur_Nord.mean[1281357] <- mean(temperature$Temperature_Interieur_Nord.mean, na.rm = TRUE)
+# temperature$Temperature_E4000.mean[1:870] <- mean(temperature$Temperature_E4000.mean, na.rm = TRUE)
+# temperature$Temperature_E4000.mean[1281357] <- mean(temperature$Temperature_E4000.mean, na.rm = TRUE)
+# temperature$Temperature_ressentie_E4000.mean[1:870] <- mean(temperature$Temperature_ressentie_E4000.mean, na.rm = TRUE)
+# temperature$Temperature_ressentie_E4000.mean[1281314:1281357] <- mean(temperature$Temperature_ressentie_E4000.mean, na.rm = TRUE)
+# temperature$Station_Meteo_Text[1:4033] <- mean(temperature$Station_Meteo_Text, na.rm = TRUE)
+# temperature$Station_Meteo_Text[1281314:1281357] <- mean(temperature$Station_Meteo_Text, na.rm = TRUE)
+# temperature$Mur_Temp_1_1.mean[1:31143] <- mean(temperature$Mur_Temp_1_1.mean, na.rm = TRUE)
+# temperature$Mur_Temp_1_1.mean[1281357] <- mean(temperature$Mur_Temp_1_1.mean, na.rm = TRUE)
+
+temp_5min_filled <- select(temp_5min_filled, -`Mur_Temp_1_1.mean`)
+#température ne contient plus de NA
 
 
 #ENERGY
