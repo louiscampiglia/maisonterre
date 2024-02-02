@@ -83,6 +83,17 @@ pyranometres$Pyranometre_Sud_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Sud
 
 
 #TEMPERATURE
+
+# Diviser les données en deux parties : mesurées toutes les 5 minutes et mesurée toutes les minutes
+temp_5min <- temperature %>%
+  select(`ï..Time`, starts_with("Temperature"), `Mur_Temp_1_1.mean`) %>%
+  mutate(`ï..Time` = as.POSIXct(`ï..Time`, format="%Y-%m-%d %H:%M:%S"))
+
+temp_min <- temperature %>%
+  select(`ï..Time`, Station_Meteo_Text) %>%
+  mutate(`ï..Time` = as.POSIXct(`ï..Time`, format="%Y-%m-%d %H:%M:%S"))
+
+
 #On a un faible nombre de valeurs de tempÃ©rature intÃ©rieure absurdes (de -20Â°C Ã  -250Â°C), on les rajoute aux NA
 #temperature$Mur_Temp_1_1.mean[temperature$Mur_Temp_1_1.mean<0]<-NA
 
