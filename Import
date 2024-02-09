@@ -1,0 +1,29 @@
+#IMPORT DES DONNEES 
+
+# Fonction pour charger un fichier CSV et renommer la variable temps (à changer en fonction du nom)
+load_and_rename <- function(filename) {
+  # Charger le fichier CSV
+  data <- read.csv(filename, sep=";")
+  # Renommer la variable temps
+  data <- data %>% dplyr::rename(Time = ï..Time)
+  # Extraire le nom du fichier sans l'extension
+  name <- gsub(".csv", "", basename(filename))
+  # Assigner le dataframe à l'environnement global avec le nom du fichier
+  assign(name, data, envir = .GlobalEnv)
+}
+
+# Nos fichiers
+files <- c("mur_sud.csv", "mur_1_part1.csv", "mur_1_part2.csv", 
+           "mur_2.csv", "toit.csv", "pyranometres.csv", 
+           "temperatures_part1.csv", "temperatures_part2.csv", 
+           "humidite.csv", "convecteurs.csv", 
+           "energie_part1.csv", "energie_part2.csv")
+
+# Charger les fichiers en utilisant la fonction et assigner les dataframes à l'environnement global
+lapply(files, load_and_rename)
+
+# Vous pouvez maintenant accéder à chaque dataframe par son nom
+# Par exemple, pour accéder au dataframe "mur_sud" : mur_sud
+
+energie =rbind(read.csv('energie_part1.csv',sep=";"),read.csv('energie_part2.csv',sep=";"))
+
