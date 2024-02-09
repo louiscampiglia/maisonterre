@@ -86,12 +86,12 @@ pyranometres$Pyranometre_Sud_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Sud
 
 # Diviser les données en deux parties : mesurées toutes les 5 minutes et mesurée toutes les minutes
 temp_5min <- temperature %>%
-  select(`ï..Time`, starts_with("Temperature"), `Mur_Temp_1_1.mean`) %>%
-  mutate(`ï..Time` = as.POSIXct(`ï..Time`, format="%Y-%m-%d %H:%M:%S"))
+  select(`Time`, starts_with("Temperature"), `Mur_Temp_1_1.mean`) %>%
+  mutate(`Time` = as.POSIXct(`Time`, format="%Y-%m-%d %H:%M:%S"))
 
 temp_min <- temperature %>%
-  select(`ï..Time`, Station_Meteo_Text) %>%
-  mutate(`ï..Time` = as.POSIXct(`ï..Time`, format="%Y-%m-%d %H:%M:%S"))
+  select(`Time`, Station_Meteo_Text) %>%
+  mutate(`Time` = as.POSIXct(`Time`, format="%Y-%m-%d %H:%M:%S"))
 
 
 #On a un faible nombre de valeurs de tempÃ©rature intÃ©rieure absurdes (de -20Â°C Ã  -250Â°C), on les rajoute aux NA
@@ -121,10 +121,10 @@ filled_groups <- lapply(1:num_groups, function(i) {
 temp_5min_filled <- bind_rows(filled_groups)
 
 # Ajouter la variable de temps
-start_time <- min(temp_5min$`ï..Time`)
-end_time <- max(temp_5min$`ï..Time`)
+start_time <- min(temp_5min$`Time`)
+end_time <- max(temp_5min$`Time`)
 time_sequence <- seq(from = start_time, to = end_time, by = 300)  # Créer une séquence de temps toutes les 5 minutes
-temp_5min_filled$`ï..Time` <- time_sequence[seq_along(temp_5min_filled$`Mur_Temp_1_1.mean`)]
+temp_5min_filled$`Time` <- time_sequence[seq_along(temp_5min_filled$`Mur_Temp_1_1.mean`)]
 
 #On a des données toutes les 5 min (le temps est à la fin)
  # Interpolation pour les valeurs manquantes au milieu de la sÃ©rie temporelle
@@ -156,16 +156,16 @@ temp_5min_filled <- select(temp_5min_filled, -`Mur_Temp_1_1.mean`)
 #ENERGY
 # Regrouper les données par timestamp et combiner les valeurs dans chaque groupe
 #En fait il y avait plusieurs lignes pour le meme timestamp donc beaucoup de NA évitables.
-energy_grouped <- energy %>%
-  group_by(`ï..Time`) %>%
+energie_grouped <- energy %>%
+  group_by(`Time`) %>%
   summarise_all(~if(all(is.na(.))) NA else first(na.omit(.)))
 # Interpolation pour les valeurs manquantes au milieu de la sÃ©rie temporelle
-energy_grouped$Energie_Eclairage <- na.approx(energy_grouped$Energie_Eclairage, na.rm = FALSE)
-energy_grouped$Energie_Prises <- na.approx(energy_grouped$Energie_Prises, na.rm = FALSE)
-energy_grouped$Energie_Convecteurs <- na.approx(energy_grouped$Energie_Convecteurs, na.rm = FALSE)
+energie_grouped$Energie_Eclairage <- na.approx(energie_grouped$Energie_Eclairage, na.rm = FALSE)
+energie_grouped$Energie_Prises <- na.approx(energie_grouped$Energie_Prises, na.rm = FALSE)
+energie_grouped$Energie_Convecteurs <- na.approx(energie_grouped$Energie_Convecteurs, na.rm = FALSE)
 #Il y a que des zÃ©ros et des NA dans Energie_VMC donc on la supprime
-energySansVMC <- subset(energy_grouped, select = -c(Energie_VMC))
-#energySansVMC ne contient plus de NA
+energieSansVMC <- subset(energie_grouped, select = -c(Energie_VMC))
+#energieSansVMC ne contient plus de NA
 
 
 #HUMIDITE
