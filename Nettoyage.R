@@ -3,16 +3,14 @@ library(dplyr)
 library(lubridate)
 library(anytime)
 
-
-setwd("C:/Users/RN Mougin/Desktop/Projet_tutore/données/data_5years")
-getwd()
+# Les données sont renommées toutes en français et sans accent A CHANGER DANS DATA_5_YEARS!!
+# setwd("votre chemin data_5years")
 
 #MUR SUD
-mur_sud=read.csv('mur_sud.csv',sep=";")
 # Remplacer "null" par NA dans toutes les colonnes
 mur_sud[mur_sud == "null"] <- NA
 # Convertir les dates en objets temporels avec as.POSIXct
-mur_sud$ï..Time <- as.POSIXct(mur_sud$ï..Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
+mur_sud$Time <- as.POSIXct(mur_sud$Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
 # Remplacer "," par le point et convertir en double
 mur_sud$Mur_Temp_sud_1.mean<- as.numeric(gsub(",", ".", mur_sud$Mur_Temp_sud_1.mean))
 mur_sud$Mur_Temp_sud_2.mean<- as.numeric(gsub(",", ".", mur_sud$Mur_Temp_sud_2.mean))
@@ -20,11 +18,10 @@ mur_sud$Mur_Temp_sud_3.mean<- as.numeric(gsub(",", ".", mur_sud$Mur_Temp_sud_3.m
 
 
 #MUR 1
-mur_1=rbind(read.csv('mur_1_part1.csv',sep=";"),read.csv('mur_1_part2.csv',sep=";"))
 # Remplacer "null" par NA dans toutes les colonnes
 mur_1[mur_1 == "null"] <- NA
 # Convertir les dates en objets temporels avec as.POSIXct
-mur_1$ï..Time <- as.POSIXct(mur_1$ï..Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
+mur_1$Time <- as.POSIXct(mur_1$Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
 # Remplacer "," par le point et convertir en double
 mur_1$Mur_Temp_1_1.mean<- as.numeric(gsub(",", ".", mur_1$Mur_Temp_1_1.mean))
 mur_1$Mur_Temp_1_2.mean<- as.numeric(gsub(",", ".", mur_1$Mur_Temp_1_2.mean))
@@ -32,21 +29,19 @@ mur_1$Mur_Temp_1_3.mean<- as.numeric(gsub(",", ".", mur_1$Mur_Temp_1_3.mean))
 
 
 #MUR 2
-mur_2=read.csv('mur_2.csv',sep=";")
 # Remplacer "null" par NA dans toutes les colonnes
 mur_2[mur_2 == "null"] <- NA
 # Convertir les dates en objets temporels avec as.POSIXct
-mur_2$ï..Time <- as.POSIXct(mur_2$ï..Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
+mur_2$Time <- as.POSIXct(mur_2$Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
 # Remplacer "," par le point et convertir en double
 mur_2$Mur_Temp_2_2.mean<- as.numeric(gsub(",", ".", mur_2$Mur_Temp_2_2.mean))
 mur_2$Mur_Temp_2_3.mean<- as.numeric(gsub(",", ".", mur_2$Mur_Temp_2_3.mean))
 
 #TOIT
-toit=read.csv('toit.csv',sep=";")
 # Remplacer "null" par NA dans toutes les colonnes
 toit[toit == "null"] <- NA
 # Convertir les dates en objets temporels avec as.POSIXct
-toit$ï..Time <- as.POSIXct(toit$ï..Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
+toit$Time <- as.POSIXct(toit$Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
 # Remplacer "," par le point et convertir en double
 toit$Mur_Temp_toit_1.mean<- as.numeric(gsub(",", ".", toit$Mur_Temp_toit_1.mean))
 toit$Mur_Temp_toit_2.mean<- as.numeric(gsub(",", ".", toit$Mur_Temp_toit_2.mean))
@@ -58,11 +53,10 @@ toit$Mur_Temp_toit_3.mean <- save_toit_1
 
 
 #PYRANOMETRES
-pyranometres=read.csv('pyranomètres.csv',sep=";")
 # Remplacer "null" par NA dans toutes les colonnes
 pyranometres[pyranometres == "null"] <- NA
 # Convertir les dates en objets temporels avec as.POSIXct
-pyranometres$ï..Time <- as.POSIXct(pyranometres$ï..Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
+pyranometres$Time <- as.POSIXct(pyranometres$Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
 # Remplacer "," par le point et convertir en double
 pyranometres$Pyranometre_Est_Wm.mean<- as.numeric(gsub(",", ".", pyranometres$Pyranometre_Est_Wm.mean))
 pyranometres$Pyranometre_Nord_Wm.mean<- as.numeric(gsub(",", ".", pyranometres$Pyranometre_Nord_Wm.mean))
@@ -71,11 +65,10 @@ pyranometres$Pyranometre_Sud_Wm.mean<- as.numeric(gsub(",", ".", pyranometres$Py
 
 
 #TEMPERATURE
-temperature=rbind(read.csv('temperatures_part1.csv',sep=";"),read.csv('temperatures_part2.csv',sep=";"))
 # Remplacer "null" par NA dans toutes les colonnes
 temperature[temperature == "null"] <- NA
 # Convertir les dates en objets temporels avec as.POSIXct
-temperature$ï..Time <- as.POSIXct(temperature$ï..Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
+temperature$Time <- as.POSIXct(temperature$Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
 # Remplacer "," par le point et mettre en double 
 temperature$Temperature_Interieur_Sud.mean<- as.numeric(gsub(",", ".", temperature$Temperature_Interieur_Sud.mean))
 temperature$Temperature_Interieur_Nord.mean<- as.numeric(gsub(",", ".", temperature$Temperature_Interieur_Nord.mean))
@@ -85,11 +78,10 @@ temperature$Mur_Temp_1_1.mean<- as.numeric(gsub(",", ".", temperature$Mur_Temp_1
 
 
 #HUMIDITE
-humidite=read.csv('humidité.csv',sep=";")
 # Remplacer "null" par NA dans toutes les colonnes
 humidite[humidite == "null"] <- NA
 # Convertir les dates en objets temporels avec as.POSIXct
-humidite$ï..Time <- as.POSIXct(humidite$ï..Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
+humidite$Time <- as.POSIXct(humidite$Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
 # Remplacer "," par le point et mettre en double
 humidite$Humidite_Interieur_Sud.mean<- as.numeric(gsub(",", ".", humidite$Humidite_Interieur_Sud.mean))
 humidite$Humidite_Interieur_Nord.mean<- as.numeric(gsub(",", ".", humidite$Humidite_Interieur_Nord.mean))
@@ -98,38 +90,37 @@ humidite$Humidite_ABSOLUE_E4000.mean<- as.numeric(gsub(",", ".", humidite$Humidi
 
 
 #CONVECTEURS
-convecteurs=read.csv('convecteurs.csv',sep=";")
 # Remplacer "null" par NA dans toutes les colonnes
 convecteurs[convecteurs == "null"] <- NA
 # Convertir les dates en objets temporels avec as.POSIXct
-convecteurs$ï..Time <- as.POSIXct(convecteurs$ï..Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
+convecteurs$Time <- as.POSIXct(convecteurs$Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
 # Remplacer "â€¯" par rien dans la colonne Puissance_Convecteurs(KW) et convertir en double
 convecteurs$Puissance_Convecteurs <- as.numeric(gsub("â€¯", "", convecteurs$Puissance_Convecteurs))
 ## ou (selon la version de R) : 
-## convecteurs$Puissance_Convecteurs <- as.numeric(gsub(" ", "", convecteurs$Puissance_Convecteurs))
+## convecteurs$Puissance_Convecteurs <- as.numeric(gsub(".", "", convecteurs$Puissance_Convecteurs))
 # Supprimer les virgules des colonnes
 convecteurs$Puissance_Convecteurs <- gsub(",", ".", convecteurs$Puissance_Convecteurs)
 
 
 #ENERGY
-energy=rbind(read.csv('energy_part1.csv',sep=";"),read.csv('energy_part2.csv',sep=";"))
+
 # Remplacer "null" par NA dans toutes les colonnes
-energy[energy == "null"] <- NA
+energie[energie == "null"] <- NA
 # Convertir les dates en objets temporels avec as.POSIXct
-energy$ï..Time <- as.POSIXct(energy$ï..Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
+energie$Time <- as.POSIXct(energie$Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
 # Supprimer les virgules des colonnes
-energy$Energie_Eclairage <- gsub(",", ".", energy$Energie_Eclairage)
-energy$Energie_VMC <- gsub(",", ".", energy$Energie_VMC)
-energy$Energie_Prises <- gsub(",", ".", energy$Energie_Prises)
-energy$Energie_Convecteurs <- gsub(",", ".", energy$Energie_Convecteurs)
+energie$Energie_Eclairage <- gsub(",", ".", energie$Energie_Eclairage)
+energie$Energie_VMC <- gsub(",", ".", energie$Energie_VMC)
+energie$Energie_Prises <- gsub(",", ".", energie$Energie_Prises)
+energie$Energie_Convecteurs <- gsub(",", ".", energie$Energie_Convecteurs)
 # Remplacer "â€¯" par rien et convertir en double
-energy$Energie_Prises <- as.numeric(gsub("â€¯", "", energy$Energie_Prises))
-energy$Energie_Convecteurs <- as.numeric(gsub("â€¯", "", energy$Energie_Convecteurs))
+energie$Energie_Prises <- as.numeric(gsub("â€¯", "", energie$Energie_Prises))
+energie$Energie_Convecteurs <- as.numeric(gsub("â€¯", "", energie$Energie_Convecteurs))
 ## ou, selon la version de R :
-## energy$Energie_Prises <- as.numeric(gsub(" ", "", energy$Energie_Prises))
-## energy$Energie_Convecteurs <- as.numeric(gsub(" ", "", energy$Energie_Convecteurs))
-energy$Energie_Eclairage <- as.numeric(energy$Energie_Eclairage)
-energy$Energie_VMC <- as.numeric(energy$Energie_VMC)
+## energy$Energie_Prises <- as.numeric(gsub(".", "", energy$Energie_Prises))
+## energy$Energie_Convecteurs <- as.numeric(gsub(".", "", energy$Energie_Convecteurs))
+energie$Energie_Eclairage <- as.numeric(energie$Energie_Eclairage)
+energie$Energie_VMC <- as.numeric(energie$Energie_VMC)
 
 
 
