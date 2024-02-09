@@ -7,33 +7,33 @@ library(lubridate)
 
 
 #ENERGY
-energyMonth <- energySansVMC %>%
-  mutate(Year = year(ï..Time), Month = month(ï..Time))
+energieMonth <- energieSansVMC %>%
+  mutate(Year = year(Time), Month = month(Time))
 
 # Filtrer les données pour chaque hiver
-energy_winter_2018 <- energyMonth %>%
+energie_winter_2018 <- energieMonth %>%
   filter(Year == 2018 & Month %in% c(12, 1, 2))
 
-energy_winter_2019 <- energyMonth %>%
+energie_winter_2019 <- energieMonth %>%
   filter(Year == 2019 & Month %in% c(12, 1, 2))
 
-energy_winter_2020 <- energyMonth %>%
+energie_winter_2020 <- energieMonth %>%
   filter(Year == 2020 & Month %in% c(12, 1, 2))
 
-energy_winter_2021 <- energyMonth %>%
+energie_winter_2021 <- energieMonth %>%
   filter(Year == 2021 & Month %in% c(12, 1, 2))
 
-energy_winter_2022 <- energyMonth %>%
+energie_winter_2022 <- energieMonth %>%
   filter(Year == 2022 & Month %in% c(12, 1, 2))
 
-energy_winter_2023 <- energyMonth %>%
+energie_winter_2023 <- energieMonth %>%
   filter(Year == 2023 & Month %in% c(12, 1, 2))
 
 
 #HUMIDITE
 
 humiditeMonth <- humidite %>%
-  mutate(Year = year(ï..Time), Month = month(ï..Time))
+  mutate(Year = year(Time), Month = month(Time))
 
 # Filtrer les données pour chaque hiver
 humidite_winter_2018 <- humiditeMonth %>%
@@ -57,7 +57,7 @@ humidite_winter_2023 <- humiditeMonth %>%
 #MUR_1
 
 mur_1Month <- mur_1 %>%
-  mutate(Year = year(ï..Time), Month = month(ï..Time))
+  mutate(Year = year(Time), Month = month(Time))
 
 # Filtrer les données pour chaque hiver
 mur_1_winter_2018 <- mur_1Month %>%
@@ -81,7 +81,7 @@ mur_1_winter_2023 <- mur_1Month %>%
 #MUR_2
 
 mur_2Month <- mur_2 %>%
-  mutate(Year = year(ï..Time), Month = month(ï..Time))
+  mutate(Year = year(Time), Month = month(Time))
 
 # Filtrer les données pour chaque hiver
 mur_2_winter_2018 <- mur_2Month %>%
@@ -106,7 +106,7 @@ mur_2_winter_2023 <- mur_2Month %>%
 #MUR_SUD
 
 mur_sudMonth <- mur_sud %>%
-  mutate(Year = year(ï..Time), Month = month(ï..Time))
+  mutate(Year = year(Time), Month = month(Time))
 
 # Filtrer les données pour chaque hiver
 mur_sud_winter_2018 <- mur_sudMonth %>%
@@ -131,7 +131,7 @@ mur_sud_winter_2023 <- mur_sudMonth %>%
 #PYRANOMETRES
 
 pyranometresMonth <- pyranometres %>%
-  mutate(Year = year(ï..Time), Month = month(ï..Time))
+  mutate(Year = year(Time), Month = month(Time))
 
 # Filtrer les données pour chaque hiver
 pyranometres_winter_2018 <- pyranometresMonth %>%
@@ -156,7 +156,7 @@ pyranometres_winter_2023 <- pyranometresMonth %>%
 #TEMPERATURE
 
 temperatureMonth <- temperature %>%
-  mutate(Year = year(ï..Time), Month = month(ï..Time))
+  mutate(Year = year(Time), Month = month(Time))
 
 # Filtrer les données pour chaque hiver
 temperature_winter_2018 <- temperatureMonth %>%
@@ -179,8 +179,8 @@ temperature_winter_2023 <- temperatureMonth %>%
 
 #TOIT
 
-toitMonth <- temperature %>%
-  mutate(Year = year(ï..Time), Month = month(ï..Time))
+toitMonth <- toit %>%
+  mutate(Year = year(Time), Month = month(Time))
 
 # Filtrer les données pour chaque hiver
 toit_winter_2018 <- toitMonth %>%
@@ -205,7 +205,7 @@ toit_winter_2023 <- toitMonth %>%
 #CONVECTEURS
 
 convecteursMonth <- convecteurs %>%
-  mutate(Year = year(ï..Time), Month = month(ï..Time))
+  mutate(Year = year(Time), Month = month(Time))
 
 # Filtrer les données pour chaque hiver
 convecteurs_winter_2018 <- convecteursMonth %>%
