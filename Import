@@ -34,7 +34,7 @@ lapply(files, load_and_rename)
 
 # Combiner les parties des fichiers qui sont en deux parties
 mur_1 <- rbind(mur_1_part1, mur_1_part2)
-temperatures <- rbind(temperatures_part1, temperatures_part2)
+temperature <- rbind(temperatures_part1, temperatures_part2)
 energie <- rbind(energie_part1, energie_part2)
 
 # Renommer la variable temps
