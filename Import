@@ -6,21 +6,23 @@ library(lubridate)
 library(anytime)
 
 setwd("C:/Users/RN Mougin/Desktop/Projet_tutore/data/data_5years")
-#getwd()
+getwd()
 
 # Fonction pour charger un fichier CSV et renommer la variable temps (à changer en fonction du nom)
 load_and_rename <- function(filename) {
   # Charger le fichier CSV
   data <- read.csv(filename, sep=";")
-  # Renommer la variable temps
-  data <- data %>% dplyr::rename(Time = ï..Time)
   # Extraire le nom du fichier sans l'extension
   name <- gsub(".csv", "", basename(filename))
+  # Renommer la variable temps si elle existe
+  if ("ï..Time" %in% colnames(data)) {
+    data <- data %>% dplyr::rename(Time = `ï..Time`)
+  }
   # Assigner le dataframe à l'environnement global avec le nom du fichier
   assign(name, data, envir = .GlobalEnv)
 }
 
-# Nos fichiers
+# Télécharger les fichiers CSV
 files <- c("mur_sud.csv", "mur_1_part1.csv", "mur_1_part2.csv", 
            "mur_2.csv", "toit.csv", "pyranometres.csv", 
            "temperatures_part1.csv", "temperatures_part2.csv", 
@@ -30,12 +32,22 @@ files <- c("mur_sud.csv", "mur_1_part1.csv", "mur_1_part2.csv",
 # Charger les fichiers en utilisant la fonction et assigner les dataframes à l'environnement global
 lapply(files, load_and_rename)
 
-# Vous pouvez maintenant accéder à chaque dataframe par son nom
-# Par exemple, pour accéder au dataframe "mur_sud" : mur_sud
+# Combiner les parties des fichiers qui sont en deux parties
+mur_1 <- rbind(mur_1_part1, mur_1_part2)
+temperatures <- rbind(temperatures_part1, temperatures_part2)
+energie <- rbind(energie_part1, energie_part2)
 
-energie =rbind(read.csv('energie_part1.csv',sep=";"),read.csv('energie_part2.csv',sep=";"))
-temperature =rbind(read.csv('temperatures_part1.csv',sep=";"),read.csv('temperatures_part2.csv',sep=";"))
-mur_1 =rbind(read.csv('mur_1_part1.csv',sep=";"),read.csv('mur_1_part2.csv',sep=";"))
+# Renommer la variable temps
+rename_columns <- function() {
+  df_names <- ls(pattern="^mur_|^temperatures|^energie")
+  for (df_name in df_names) {
+    if ("ï..Time" %in% colnames(get(df_name))) {
+      assign(df_name, get(df_name) %>% rename(Time = `ï..Time`), envir = .GlobalEnv)
+    }
+  }
+}
+
+rename_columns()
 
 
 #On charge donc les donnees : convecteurs, energie, humidite, mur_1, mur_2, mur_sud, pyranometres, temperature,toit.
