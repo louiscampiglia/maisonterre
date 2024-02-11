@@ -1,4 +1,12 @@
-#IMPORT DES DONNEES 
+#IMPORT DES DONNEES
+
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(anytime)
+
+setwd("C:/Users/RN Mougin/Desktop/Projet_tutore/data/data_5years")
+#getwd()
 
 # Fonction pour charger un fichier CSV et renommer la variable temps (à changer en fonction du nom)
 load_and_rename <- function(filename) {
@@ -26,4 +34,8 @@ lapply(files, load_and_rename)
 # Par exemple, pour accéder au dataframe "mur_sud" : mur_sud
 
 energie =rbind(read.csv('energie_part1.csv',sep=";"),read.csv('energie_part2.csv',sep=";"))
+temperature =rbind(read.csv('temperatures_part1.csv',sep=";"),read.csv('temperatures_part2.csv',sep=";"))
+mur_1 =rbind(read.csv('mur_1_part1.csv',sep=";"),read.csv('mur_1_part2.csv',sep=";"))
 
+
+#On charge donc les donnees : convecteurs, energie, humidite, mur_1, mur_2, mur_sud, pyranometres, temperature,toit.
