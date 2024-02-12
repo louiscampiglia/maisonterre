@@ -96,7 +96,7 @@ convecteurs[convecteurs == "null"] <- NA
 convecteurs$Time <- as.POSIXct(convecteurs$Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
 # Remplacer "â€¯" par rien dans la colonne Puissance_Convecteurs(KW) et convertir en double
 convecteurs$Puissance_Convecteurs <- as.numeric(gsub("â€¯", "", convecteurs$Puissance_Convecteurs))
-## ou (selon la version de R) : 
+## ou (selon la forme des données) : 
 ## convecteurs$Puissance_Convecteurs <- as.numeric(gsub(".", "", convecteurs$Puissance_Convecteurs))
 # Supprimer les virgules des colonnes
 convecteurs$Puissance_Convecteurs <- gsub(",", ".", convecteurs$Puissance_Convecteurs)
@@ -116,7 +116,7 @@ energie$Energie_Convecteurs <- gsub(",", ".", energie$Energie_Convecteurs)
 # Remplacer "â€¯" par rien et convertir en double
 energie$Energie_Prises <- as.numeric(gsub("â€¯", "", energie$Energie_Prises))
 energie$Energie_Convecteurs <- as.numeric(gsub("â€¯", "", energie$Energie_Convecteurs))
-## ou, selon la version de R :
+## ou, selon la forme des données :
 ## energy$Energie_Prises <- as.numeric(gsub(".", "", energy$Energie_Prises))
 ## energy$Energie_Convecteurs <- as.numeric(gsub(".", "", energy$Energie_Convecteurs))
 energie$Energie_Eclairage <- as.numeric(energie$Energie_Eclairage)
@@ -153,45 +153,3 @@ str(température)  # température (°C) exterieur, station météo, intérieur (
 
 str(humidité)  # humidité relative (%) à l'interieur (nord + sud) et à l'extrieur
     # + humidité absolue (g/kgas à l'exterieur)
-
-
-
-
-
-
-
-
-#régularité données
-#données manquantes
-
-#moyennes glissantes
-
-
-
-#plot
-#observations
-
-
-library(stringr)
-
-str_replace(convecteurs,
-            pattern = "â€¯", 
-            replacement = ",")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
