@@ -168,6 +168,12 @@ energieSansVMC <- subset(energie_grouped, select = -c(Energie_VMC))
 #energieSansVMC ne contient plus de NA
 
 
+
+#CONVECTEURS
+# Interpolation pour les valeurs manquantes au milieu de la série temporelle
+convecteurs$Puissance_Convecteurs <- na.approx(convecteurs$Puissance_Convecteurs, na.rm = FALSE)
+
+
 #HUMIDITE
 # Interpolation pour les valeurs manquantes au milieu de la série temporelle
 humidite$Humidite_Interieur_Sud.mean <- na.approx(humidite$Humidite_Interieur_Sud.mean, na.rm = FALSE)
