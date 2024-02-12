@@ -1,0 +1,53 @@
+library(dplyr)
+library(lubridate)
+
+# Fonction pour filtrer les données pour chaque semaine
+filter_week_data <- function(data) {
+  data %>%
+    mutate(Weekday = wday(Time)) %>%
+    filter(Weekday %in% 2:6)  # 2:6 représente les jours de semaine (lundi à vendredi)
+}
+
+# Fonction pour filtrer les données pour chaque week-end
+filter_weekend_data <- function(data) {
+  data %>%
+    mutate(Weekday = wday(Time)) %>%
+    filter(Weekday %in% c(1, 7))  # 1 et 7 représentent samedi et dimanche
+}
+
+
+# Création des noms de variables
+variable_names <- c("energieSansVMC", "humidite", "mur_1", "mur_2", "mur_sud", "pyranometres", "temperature", "toit", "convecteurs")
+
+# Vérification de l'existence des variables et affichage des noms corrects
+print("Variables disponibles :")
+print(ls())
+
+# Création d'une liste pour stocker les données filtrées
+week_data <- lapply(variable_names, function(var) {
+  if (exists(var)) {
+    print(paste("Filtrage des données pour", var))
+    filter_week_data(get(var))
+  } else {
+    warning(paste("La variable", var, "n'existe pas dans l'environnement global."))
+    return(NULL)
+  }
+})
+
+weekend_data <- lapply(variable_names, function(var) {
+  if (exists(var)) {
+    print(paste("Filtrage des données pour", var))
+    filter_weekend_data(get(var))
+  } else {
+    warning(paste("La variable", var, "n'existe pas dans l'environnement global."))
+    return(NULL)
+  }
+})
+
+
+# Les données filtrées sont stockées dans deux listes distinctes, 
+# week_data pour les données de semaine et 
+# weekend_data pour les données de week-end.
+# Accéder aux données de semaine pour l'énergie : week_data[[1]]
+# Accéder aux données de week-end pour l'humidité :weekend_data[[2]]
+# Dans l'ordre de variable_names
