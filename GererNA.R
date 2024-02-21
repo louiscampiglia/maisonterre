@@ -82,7 +82,7 @@ pyranometres$Pyranometre_Sud_Wm.mean[1:296] <- mean(pyranometres$Pyranometre_Sud
 
 
 
-#TEMPERATURE
+#TEMPERATURE (version 1)
 
 # Diviser les données en deux parties : mesurées toutes les 5 minutes et mesurée toutes les minutes
 temp_5min <- temperature %>%
@@ -135,22 +135,26 @@ temp_5min_filled$Temperature_ressentie_E4000.mean<- na.approx(temp_5min_filled$T
 temp_5min_filled$Station_Meteo_Text <- na.approx(temp_5min_filled$Station_Meteo_Text, na.rm = FALSE)
 temp_5min_filled$Mur_Temp_1_1.mean <- na.approx(temp_5min_filled$Mur_Temp_1_1.mean, na.rm = FALSE)
 
-# #Imputation par la moyenne pour les NA (2.80%)
-# temperature$Temperature_Interieur_Sud.mean[1:872] <- mean(temperature$Temperature_Interieur_Sud.mean, na.rm = TRUE)
-# temperature$Temperature_Interieur_Sud.mean[1281357] <- mean(temperature$Temperature_Interieur_Sud.mean, na.rm = TRUE)
-# temperature$Temperature_Interieur_Nord.mean[1:871] <- mean(temperature$Temperature_Interieur_Nord.mean, na.rm = TRUE)
-# temperature$Temperature_Interieur_Nord.mean[1281357] <- mean(temperature$Temperature_Interieur_Nord.mean, na.rm = TRUE)
-# temperature$Temperature_E4000.mean[1:870] <- mean(temperature$Temperature_E4000.mean, na.rm = TRUE)
-# temperature$Temperature_E4000.mean[1281357] <- mean(temperature$Temperature_E4000.mean, na.rm = TRUE)
-# temperature$Temperature_ressentie_E4000.mean[1:870] <- mean(temperature$Temperature_ressentie_E4000.mean, na.rm = TRUE)
-# temperature$Temperature_ressentie_E4000.mean[1281314:1281357] <- mean(temperature$Temperature_ressentie_E4000.mean, na.rm = TRUE)
-# temperature$Station_Meteo_Text[1:4033] <- mean(temperature$Station_Meteo_Text, na.rm = TRUE)
-# temperature$Station_Meteo_Text[1281314:1281357] <- mean(temperature$Station_Meteo_Text, na.rm = TRUE)
-# temperature$Mur_Temp_1_1.mean[1:31143] <- mean(temperature$Mur_Temp_1_1.mean, na.rm = TRUE)
-# temperature$Mur_Temp_1_1.mean[1281357] <- mean(temperature$Mur_Temp_1_1.mean, na.rm = TRUE)
-
 temp_5min_filled <- select(temp_5min_filled, -`Mur_Temp_1_1.mean`)
 #température ne contient plus de NA
+
+#TEMPERATURE (version 2)
+
+ temperature$Temperature_Interieur_Sud.mean[1:872] <- mean(temperature$Temperature_Interieur_Sud.mean, na.rm = TRUE)
+ temperature$Temperature_Interieur_Nord.mean[1:871] <- mean(temperature$Temperature_Interieur_Nord.mean, na.rm = TRUE)
+ temperature$Temperature_E4000.mean[1:870] <- mean(temperature$Temperature_E4000.mean, na.rm = TRUE)
+ temperature$Temperature_ressentie_E4000.mean[1:870] <- mean(temperature$Temperature_ressentie_E4000.mean, na.rm = TRUE)
+ temperature$Station_Meteo_Text[1:4033] <- mean(temperature$Station_Meteo_Text, na.rm = TRUE)
+ temperature$Mur_Temp_1_1.mean[1:31143] <- mean(temperature$Mur_Temp_1_1.mean, na.rm = TRUE)
+ 
+ temperature$Temperature_Interieur_Sud.mean<- na.approx(temperature$Temperature_Interieur_Sud.mean, na.rm = FALSE)
+ temperature$Temperature_Interieur_Nord.mean<- na.approx(temperature$Temperature_Interieur_Nord.mean, na.rm = FALSE)
+ temperature$Temperature_E4000.mean<- na.approx(temperature$Temperature_E4000.mean, na.rm = FALSE)
+ temperature$Temperature_ressentie_E4000.mean<- na.approx(temperature$Temperature_ressentie_E4000.mean, na.rm = FALSE)
+ temperature$Station_Meteo_Text<- na.approx(temperature$Station_Meteo_Text, na.rm = FALSE)
+ temperature$Mur_Temp_1_1.mean<- na.approx(temperature$Mur_Temp_1_1.mean, na.rm = FALSE)
+
+
 
 
 #ENERGY
