@@ -75,6 +75,7 @@ temperature$Temperature_Interieur_Nord.mean<- as.numeric(gsub(",", ".", temperat
 temperature$Temperature_E4000.mean<- as.numeric(gsub(",", ".", temperature$Temperature_E4000.mean))
 temperature$Temperature_ressentie_E4000.mean<- as.numeric(gsub(",", ".", temperature$Temperature_ressentie_E4000.mean))
 temperature$Mur_Temp_1_1.mean<- as.numeric(gsub(",", ".", temperature$Mur_Temp_1_1.mean))
+temperature$Station_Meteo_Text<- as.numeric(gsub(",", ".", temperature$Station_Meteo_Text))
 
 
 #HUMIDITE
