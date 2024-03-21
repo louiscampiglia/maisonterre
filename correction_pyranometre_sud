@@ -1,0 +1,70 @@
+library(lubridate)
+
+# Le capteur pyranomètre Sud été décroché d'août 2020 à mi-octobre 2021, créant des valeurs incorrectes qui faussent les analyses
+# Ici, on va créer 'pyranometres_corr' qui impute les valeurs du capteur sud  sur cette période par la moyenne des valeurs des autres années à la même date
+
+
+
+
+# on doit le faire en 2 fois pour éviter des problèmes d'année entre 2020 et 2021
+
+# partie 2020 :
+data_a_remplacer <- subset(pyranometres, Time >= as.POSIXct("2020-08-01") & Time <= as.POSIXct("2020-12-31"))
+
+# Fonction pour extraire la date + heure sans l'année :
+extract_date_hour <- function(datetime) {
+  format(datetime, "%m-%d %H:%M:%S")
+}
+
+# Calcul de la moyenne de Pyranometre_Sud_Wm.mean pour chaque date & heure (hors 2020) :
+mean_by_date_hour <- aggregate(Pyranometre_Sud_Wm.mean ~ extract_date_hour(Time), 
+                               data = pyranometres[!year(pyranometres$Time) == 2021, ], 
+                               FUN = mean)
+
+mean_by_date_hour$Time <- mean_by_date_hour$`extract_date_hour(Time)`
+data_a_remplacer$Time=extract_date_hour(data_a_remplacer$Time)
+data_a_remplacer_mean <- merge(data_a_remplacer, mean_by_date_hour, by="Time", all.x = TRUE)
+
+colnames(data_a_remplacer_mean)[7] <- "Pyranometre_Sud_Wm.mean"
+data_a_remplacer_final <- data_a_remplacer_mean[c("Time", "Pyranometre_Est_Wm.mean", "Pyranometre_Nord_Wm.mean", "Pyranometre_Ouest_Wm.mean", "Pyranometre_Sud_Wm.mean")]
+data_a_remplacer_final$Time <- as.POSIXct(paste0("2020-", data_a_remplacer_final$Time), format = "%Y-%m-%d %H:%M:%S")
+data_a_remplacer_final
+
+pyranometres_corr=pyranometres
+pyranometres_corr[pyranometres_corr$Time >= as.POSIXct("2020-08-01") & pyranometres_corr$Time <= as.POSIXct("2020-12-31"), ] <- data_a_remplacer_final
+
+
+
+# partie 2021 :
+data_a_remplacer <- subset(pyranometres, Time >= as.POSIXct("2021-01-01") & Time <= as.POSIXct("2021-10-15"))
+
+# Calcul de la moyenne de Pyranometre_Sud_Wm.mean pour chaque date & heure (hors 2021) :
+mean_by_date_hour <- aggregate(Pyranometre_Sud_Wm.mean ~ extract_date_hour(Time), 
+                               data = pyranometres[!year(pyranometres$Time) == 2021, ], 
+                               FUN = mean)
+
+mean_by_date_hour$Time <- mean_by_date_hour$`extract_date_hour(Time)`
+data_a_remplacer$Time=extract_date_hour(data_a_remplacer$Time)
+data_a_remplacer_mean <- merge(data_a_remplacer, mean_by_date_hour, by="Time", all.x = TRUE)
+
+colnames(data_a_remplacer_mean)[7] <- "Pyranometre_Sud_Wm.mean"
+data_a_remplacer_final <- data_a_remplacer_mean[c("Time", "Pyranometre_Est_Wm.mean", "Pyranometre_Nord_Wm.mean", "Pyranometre_Ouest_Wm.mean", "Pyranometre_Sud_Wm.mean")]
+data_a_remplacer_final$Time <- as.POSIXct(paste0("2021-", data_a_remplacer_final$Time), format = "%Y-%m-%d %H:%M:%S")
+data_a_remplacer_final
+
+
+pyranometres_corr[pyranometres_corr$Time >= as.POSIXct("2021-01-01") & pyranometres_corr$Time <= as.POSIXct("2021-10-15"), ] <- data_a_remplacer_final
+
+
+#controle :
+plot(pyranometres_corr$Time,pyranometres_corr$Pyranometre_Sud_Wm.mean,col='red')
+
+
+#correction d'un éventuel décalage sur les autres capteurs :
+pyranometres_corr$Pyranometre_Est_Wm.mean=pyranometres$Pyranometre_Est_Wm.mean
+pyranometres_corr$Pyranometre_Ouest_Wm.mean=pyranometres$Pyranometre_Ouest_Wm.mean
+pyranometres_corr$Pyranometre_Nord_Wm.mean=pyranometres$Pyranometre_Nord_Wm.mean
+
+#controle :
+plot(pyranometres$Pyranometre_Ouest_Wm.mean-pyranometres_corr$Pyranometre_Ouest_Wm.mean,type='l')
+
