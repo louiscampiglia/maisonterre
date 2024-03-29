@@ -3,6 +3,7 @@ library(lubridate)
 
 
 #DIVISER LES DONNEES PAR SAISONS pour récupérer les hivers
+# on prend ici les saisons meteorologiuqes : hiver = décembre + janvier + février
 #résultats :  data_winter_date
 
 
