@@ -1,6 +1,7 @@
 library(dplyr)
 library(lubridate)
 
+# on prend ici les saisons meteorologiuqes : hiver = décembre + janvier + février
 
 # Convertir chaque élément de la liste en dataframe
 week_data <- lapply(week_data, as.data.frame)
