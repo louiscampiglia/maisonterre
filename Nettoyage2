@@ -7,3 +7,17 @@ mur_sud$Time <- as.POSIXct(mur_sud$Time, format = "%Y-%m-%d-%H")
 pyranometres$Time <- as.POSIXct(pyranometres$Time, format = "%Y-%m-%d-%H")
 temperature$Time <- as.POSIXct(temperature$Time, format = "%Y-%m-%d-%H")
 toit$Time <- as.POSIXct(toit$Time, format = "%Y-%m-%d-%H")
+
+
+
+# gérer les NAs pour pyranometres (necessaire pour la correction de pyranometre_sud) :
+
+library(dplyr)
+library(zoo)
+library(tidyr)
+
+pyranometres$Pyranometre_Est_Wm.mean<- na.approx(pyranometres$Pyranometre_Est_Wm.mean, na.rm = FALSE)
+pyranometres$Pyranometre_Nord_Wm.mean <- na.approx(pyranometres$Pyranometre_Nord_Wm.mean, na.rm = FALSE)
+pyranometres$Pyranometre_Ouest_Wm.mean <- na.approx(pyranometres$Pyranometre_Ouest_Wm.mean, na.rm = FALSE)
+pyranometres$Pyranometre_Sud_Wm.mean<- na.approx(pyranometres$Pyranometre_Sud_Wm.mean, na.rm = FALSE)
+pyranometres=head(pyranometres,-1)
