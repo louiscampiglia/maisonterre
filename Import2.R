@@ -176,6 +176,16 @@ temperature <- rbind(temperature_part2, temperature_part1)
 co2 <- read_delim("co2.csv", delim = ";",escape_double = FALSE, 
                   col_types = cols(Time = col_datetime(format = "%Y-%m-%d-%H")), 
                   trim_ws = TRUE, skip = 1)
+# Convertir les virgules en points dans les colonnes contenant des valeurs numériques
+co2$CO2_Interieur_Sud.mean <- gsub(",", ".", co2$CO2_Interieur_Sud.mean)
+co2$CO2_Interieur_Nord.mean <- gsub(",", ".", co2$CO2_Interieur_Nord.mean)
+co2$CO2_E4000.mean <- gsub(",", ".", co2$CO2_E4000.mean)
+co2$`COV_E4000.mean  x100` <- gsub(",", ".", co2$`COV_E4000.mean  x100`)
+# Char en Double
+co2$CO2_Interieur_Sud.mean <- as.double(co2$CO2_Interieur_Sud.mean)
+co2$CO2_Interieur_Nord.mean <- as.double(co2$CO2_Interieur_Nord.mean)
+co2$CO2_E4000.mean <- as.double(co2$CO2_E4000.mean)
+co2$`COV_E4000.mean  x100` <- as.double(co2$`COV_E4000.mean  x100`)
 
 
 
