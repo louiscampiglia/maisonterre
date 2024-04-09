@@ -1,3 +1,5 @@
+#Pour les données horraires obtenues avec "Import2"
+
 convecteurs$Time <- as.POSIXct(convecteurs$Time, format = "%Y-%m-%d-%H")
 energie$Time <- as.POSIXct(energie$Time, format = "%Y-%m-%d-%H")
 humidite$Time <- as.POSIXct(humidite$Time, format = "%Y-%m-%d-%H")
