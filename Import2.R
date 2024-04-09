@@ -172,6 +172,10 @@ temperature_part2$Mur_Temp_1_1.mean <- as.double(temperature_part2$Mur_Temp_1_1.
 # Combiner les parties des fichiers qui sont en deux parties
 temperature <- rbind(temperature_part2, temperature_part1)
 
+#CO2
+co2 <- read_delim("co2.csv", delim = ";",escape_double = FALSE, 
+                  col_types = cols(Time = col_datetime(format = "%Y-%m-%d-%H")), 
+                  trim_ws = TRUE, skip = 1)
 
 
 
