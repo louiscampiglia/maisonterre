@@ -189,4 +189,35 @@ co2$`COV_E4000.mean  x100` <- as.double(co2$`COV_E4000.mean  x100`)
 
 
 
+#Donnees meteo
+
+# Charger le fichier .dat en tant que dataframe
+meteo2020 <- read_delim("meteo2020.dat", delim = ",", escape_double = FALSE, 
+                        col_types = cols(TIMESTAMP = col_datetime(format = "%Y-%m-%d %H:%M:%S")), 
+                        trim_ws = TRUE, skip = 1)
+#On supprime les lignes d'information
+meteo2020 <- meteo2020[-c(1:2), ]
+# Charger le fichier .dat en tant que dataframe
+meteo2021 <- read_delim("meteo2021.dat", delim = ",", escape_double = FALSE, 
+                        col_types = cols(TIMESTAMP = col_datetime(format = "%Y-%m-%d %H:%M:%S")), 
+                        trim_ws = TRUE, skip = 1)
+#On supprime les lignes d'information
+meteo2021 <- meteo2021[-c(1:2), ]
+
+# Combiner les parties des fichiers qui sont en deux parties
+meteo <- rbind(meteo2020, meteo2021)
+# Char en Double
+meteo$RECORD <- as.integer(meteo$RECORD)
+meteo$CR1000_Alim_Avg <- as.double(meteo$CR1000_Alim_Avg)
+meteo$CR1000_Temp_Avg <- as.double(meteo$CR1000_Temp_Avg)
+meteo$AirTemp_Avg <- as.double(meteo$AirTemp_Avg)
+meteo$RH_Avg<-as.double(meteo$RH_Avg)
+meteo$Patm_Avg <-as.integer(meteo$Patm_Avg)
+meteo$WSpd_Avg <- as.double(meteo$WSpd_Avg)
+meteo$WDir_Avg <- as.double(meteo$WDir_Avg)
+meteo$WDir_Std <- as.double(meteo$WDir_Std)
+meteo$WSpd_Max <- as.double(meteo$WSpd_Max)
+meteo$Rain_mesure_Tot <- as.double(meteo$Rain_mesure_Tot)
+meteo$Ray_Global_Avg <- as.double(meteo$Ray_Global_Avg)
+
 
