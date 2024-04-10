@@ -1,4 +1,5 @@
 library(readr)
+library(stringr)
 
 
 setwd("C:/Users/RN Mougin/Desktop/Projet_tutore/data/data_5years")
