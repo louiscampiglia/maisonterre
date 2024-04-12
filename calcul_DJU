@@ -1,0 +1,29 @@
+library(dplyr)
+library(lubridate)
+
+# Utilisation de la méthode "Météo" avec la moyenne de température quotidienne
+
+data=merge(temperature,convecteurs,by="Time",all=T)
+data=subset(data, select = c(Time,Puissance_Convecteurs,Station_Meteo_Text))
+
+str(data)
+
+data_daily <- data %>%
+  group_by(Date = as.Date(Time)) %>%
+  summarize(Temperature_Moyenne = mean(Station_Meteo_Text,na.rm=T),convecteurs=sum(Puissance_Convecteurs,na.rm=T))
+
+# calcul avec nos données météo des DJU de déficit "hiver" (ref <18°C) :
+data_daily$DJU18=ifelse(18 <= data_daily$Temperature_Moyenne, 0, 18 - data_daily$Temperature_Moyenne)
+
+# calcul avec nos données météo des DJU d'excédents "été" (ref >26°C) :
+data_daily$DJU26=ifelse(26 >= data_daily$Temperature_Moyenne, 0, data_daily$Temperature_Moyenne - 26)
+
+data_daily$Time <- as.POSIXct(data_daily$Date)
+data_daily$Month <-  format(data_daily$Date, "%Y-%m")
+convecteurs_DJU=subset(data_daily, select = -c(Temperature_Moyenne, Date, Time))
+convecteurs_DJU <- aggregate(. ~ Month, data = convecteurs_DJU, FUN = function(x) sum(x, na.rm = TRUE))
+convecteurs_DJU$Somme_convecteurs_divisé_par_DJU18=convecteurs_DJU$convecteurs/convecteurs_DJU$DJU18
+convecteurs_DJU$Somme_convecteurs_divisé_par_DJU18[convecteurs_DJU$Somme_convecteurs_divisé_par_DJU18 == Inf] <- NA
+
+
+# Attention : sous-estimation si utilisation d'une version de "temperature" avec des NAs
