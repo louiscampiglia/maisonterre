@@ -3,10 +3,16 @@ library(lubridate)
 
 # Utilisation de la méthode "Météo" avec la moyenne de température quotidienne
 
+# Attention, à faire après interpollations des NAs de convecteurs et temperature 
+
 data=merge(temperature,convecteurs,by="Time",all=T)
 data=subset(data, select = c(Time,Puissance_Convecteurs,Station_Meteo_Text))
 
 str(data)
+
+# pour si jamais il reste des NAs de puissance_convecteurs (dates manquantes dans le dataframe convecteurs) :
+data$Puissance_Convecteurs <- na.approx(data$Puissance_Convecteurs, na.rm = FALSE)
+
 
 data_daily <- data %>%
   group_by(Date = as.Date(Time)) %>%
@@ -23,7 +29,21 @@ data_daily$Month <-  format(data_daily$Date, "%Y-%m")
 convecteurs_DJU=subset(data_daily, select = -c(Temperature_Moyenne, Date, Time))
 convecteurs_DJU <- aggregate(. ~ Month, data = convecteurs_DJU, FUN = function(x) sum(x, na.rm = TRUE))
 convecteurs_DJU$Somme_convecteurs_divisé_par_DJU18=convecteurs_DJU$convecteurs/convecteurs_DJU$DJU18
-convecteurs_DJU$Somme_convecteurs_divisé_par_DJU18[convecteurs_DJU$Somme_convecteurs_divisé_par_DJU18 == Inf] <- NA
+convecteurs_DJU$Somme_convecteurs_divisé_par_DJU18 <- convecteurs_DJU$Somme_convecteurs_divisé_par_DJU18 / 1000  # unité = kWh/DJU
+convecteurs_DJU <- convecteurs_DJU %>%
+  slice(-1)
+
+convecteurs_DJU
+
+# on a obtenu une valeur de DJU18 abbérente pour décembre 2022, probablement car une grande partie des données de ce mois ont été intérpolées en raison 
 
 
-# Attention : sous-estimation si utilisation d'une version de "temperature" avec des NAs
+# visualisation en hiver (DJU18)
+convecteurs_DJU <- convecteurs_DJU %>%
+  mutate(Month = as.Date(paste0(Month, "-01")))
+convecteurs_DJU_hiver<-subset(convecteurs_DJU, format(Month, "%m") %in% c("12","01","02","11","03","04"))
+library(ggplot2)
+ggplot(convecteurs_DJU_hiver, aes(x = Month, y = Somme_convecteurs_divisé_par_DJU18)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(x = "Mois", y = "Energie mensuelle des convecteurs divisée par DJU (kWh/DJU)", title = "Energie mensuelle de chauffage par DJU pour les mois de novembre à avril")
+
