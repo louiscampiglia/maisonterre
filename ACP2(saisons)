@@ -1,5 +1,6 @@
 library(factoextra)
 library(FactoMineR)
+library("corrplot")
 
 #on va regrouper dans 'data' toutes les variables sauf mur_sud et toit pour lesquelles on n'a que quelques mois de données
 # pour limiter le nombre d'individu, on va tout regrouper en moyennes mensuelles
@@ -33,7 +34,6 @@ res.pca_chauf <- PCA(acp_chauf, scale.unit=TRUE, graph = FALSE) #ACP
 head(get_eigenvalue(res.pca_chauf)) #valeurs propres et proportions de variances des composantes principales
 fviz_eig(res.pca_chauf, addlabels = TRUE) #graph des vp
 var_chauf <- get_pca_var(res.pca_chauf)
-library("corrplot")
 corrplot(var_chauf$cos2, is.corr=FALSE)  #cos2
 fviz_pca_var(res.pca_chauf, col.var = "cos2", gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE,axes=c(1,2))+
   ggtitle("Graphique des variables - ACP période de chauffage")
@@ -45,11 +45,10 @@ res.pca_ete <- PCA(acp_ete, scale.unit=TRUE, graph = FALSE) #ACP
 head(get_eigenvalue(res.pca_ete)) #valeurs propres et proportions de variances des composantes principales
 fviz_eig(res.pca_ete, addlabels = TRUE) #graph des vp
 var_ete <- get_pca_var(res.pca_ete)
-library("corrplot")
 corrplot(var_ete$cos2, is.corr=FALSE)  #cos2
 fviz_pca_var(res.pca_ete, col.var = "cos2", gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE,axes=c(1,2))+
-  ggtitle("Graphique des variables - ACP période de chauffage")
+  ggtitle("Graphique des variables - ACP période d'été")
 fviz_pca_ind (res.pca_ete, col.ind = "cos2", gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE,axes=c(1,2))+
-  ggtitle("Graphique des individus - ACP période de chauffage")
+  ggtitle("Graphique des individus - ACP période d'été")
 fviz_contrib(res.pca_ete, choice = "ind", axes = 1 :2)  # Contribution des individus aux dim 1  et 2
 
