@@ -1,0 +1,6 @@
+# Pour corriger la période (décembre 2022) où convecteurs n'a pas de données
+#(convecteur$Time passe directement du 2 décembre au 21 décembre, il n'y a donc pas de ligne sur cette période et le code de gererNA ne suffit pas)
+data=merge(convecteurs,temperature,by="Time",all=T)  #temperature remplacable par tout dataframe ayant des valeurs en décembre 2022 et à la même régularité que convecteurs (ex: données horraires)
+data$Puissance_Convecteurs <- na.approx(data$Puissance_Convecteurs, na.rm = FALSE)
+data=subset(data, select = c(Time,Puissance_Convecteurs))
+convecteurs=data
