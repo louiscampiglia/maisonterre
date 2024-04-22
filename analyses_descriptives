@@ -1,0 +1,294 @@
+### quelques-uns des graphiques utilisées pour les analyses univariées
+
+
+
+library(ggplot2)
+library(gridExtra)
+library(dplyr)
+library(forecast)
+library(lubridate)
+
+
+int_sud<-ggplot(temperature, aes(y=Temperature_Interieur_Sud.mean)) +
+  geom_boxplot(fill = "lightgreen", color = "green") + ylim(9,34)+
+  labs(title = "Répartition températures intérieur Sud", y = "Temperature_Interieur_Sud.mean (°C)")
+
+int_nord<-ggplot(temperature, aes(y=Temperature_Interieur_Nord.mean)) +
+  geom_boxplot(fill = "lightgreen", color = "green") + ylim(9,34)+
+  labs(title = "Répartition températures intérieur Nord", y = "Temperature_Interieur_Nord.mean (°C)")
+
+grid.arrange(int_sud,int_nord, nrow=1, ncol=2)
+
+summary(temperature$Temperature_Interieur_Sud.mean)
+summary(temperature$Temperature_Interieur_Nord.mean)
+
+ggplot(temperature, aes(y=Station_Meteo_Text)) +
+  geom_boxplot(fill = "lightblue", color = "blue") +
+  labs(title = "Boxplot des températures extérieur (station météo)", y = "temperature extérieur (°C)")
+
+# par saison ( saisons meteorologiuqes ) :
+temperature_hiver <- subset(temperature, format(Time, "%m") %in% c("01", "02", "12"))
+temperature_printemps <- subset(temperature, format(Time, "%m") %in% c("04", "05", "03"))
+temperature_ete <- subset(temperature, format(Time, "%m") %in% c("07", "08", "06"))
+temperature_automne <- subset(temperature, format(Time, "%m") %in% c("10", "11", "09"))
+
+ext_automne<-ggplot(temperature_automne, aes(y=Station_Meteo_Text)) +
+  geom_boxplot(fill = "lightblue", color = "blue") +  ylim(-5,45) +
+  labs(title = "Températures extérieur en automne", y = "temperature extérieur (°C)")
+ext_hiver<-ggplot(temperature_hiver, aes(y=Station_Meteo_Text)) +
+  geom_boxplot(fill = "lightblue", color = "blue") +  ylim(-5,45) +
+  labs(title = "Températures extérieur en hiver", y = "temperature extérieur (°C)")
+ext_printemps<-ggplot(temperature_printemps, aes(y=Station_Meteo_Text)) +
+  geom_boxplot(fill = "lightblue", color = "blue") +  ylim(-5,45) +
+  labs(title = "Températures extérieur au printemps", y = "temperature extérieur (°C)")
+ext_ete<-ggplot(temperature_ete, aes(y=Station_Meteo_Text)) +
+  geom_boxplot(fill = "lightblue", color = "blue") +  ylim(-5,45) +
+  labs(title = "Températures extérieur en été", y = "temperature extérieur (°C)")
+grid.arrange(ext_automne,ext_hiver, ext_printemps, ext_ete, nrow=2, ncol=2)
+
+temperature_hiver_24 <- subset(temperature_hiver, format(Time, "%Y") %in% c("2024"))
+temperature_hiver_autre <- subset(temperature_hiver, format(Time, "%Y") %in% c("2021","2022","2023"))
+
+int_nord_hiver_24<-ggplot(temperature_hiver_24, aes(y=Temperature_Interieur_Nord.mean)) +
+  geom_boxplot(fill = "green", color = "darkgreen") + ylim(17,22)+
+  labs(title = "Températures intérieur Nord à l'hiver 2024", y = "Temperature_Interieur_Nord.mean (°C)")
+
+int_nord_hiver_autre<-ggplot(temperature_hiver_autre, aes(y=Temperature_Interieur_Nord.mean)) +
+  geom_boxplot(fill = "green", color = "darkgreen") + ylim(17,22)+
+  labs(title = "Températures intérieur Nord hivers 2021 à 2023", y = "Temperature_Interieur_Nord.mean (°C)")
+
+grid.arrange(int_nord_hiver_autre,int_nord_hiver_24, nrow=1, ncol=2)
+summary(temperature_hiver_24$Temperature_Interieur_Nord.mean)
+summary(temperature_hiver_autre$Temperature_Interieur_Nord.mean)
+summary(temperature_hiver_24$Temperature_Interieur_Sud.mean)
+summary(temperature_hiver_autre$Temperature_Interieur_Sud.mean)
+summary(temperature_hiver_24$Temperature_E4000.mean)
+summary(temperature_hiver_autre$Temperature_E4000.mean)
+
+summary(temperature_hiver_24$Station_Meteo_Text)
+summary(temperature_hiver_autre$Station_Meteo_Text)
+
+plot(temperature$Time,temperature$Temperature_Interieur_Sud.mean,type='l',col="darkred",main='température intérieur Nord et Sud sur 5 ans',ylab='température en °C',ylim=c(10,35))
+lines(temperature$Time,temperature$Temperature_Interieur_Nord.mean,type='l',col="darkblue")
+legend("bottomright", legend = c("Capteur intérieur Sud", "Capteur intérieur Nord"), col = c("darkred", "darkblue"), lty = 1)
+
+mur_1_15h=filter(mur_1, hour(Time) == 15) %>%
+  select(Time, Mur_Temp_1_1.mean, Mur_Temp_1_2.mean, Mur_Temp_1_3.mean)
+
+mur_1_15h$Day = as.Date(mur_1_15h$Time)
+mur_1_15h = mur_1_15h[,-1]
+
+mur_1_15h # les observations de mur_1 chaque jour à 15h
+
+plot(mur_1_15h$Day, mur_1_15h$Mur_Temp_1_1.mean, type='l', xlab='date', ylab='température (°C)', col='red',main="température de mur_1 à 15H")
+lines(mur_1_15h$Day, mur_1_15h$Mur_Temp_1_3.mean, type='l', col='blue')
+legend("topleft", legend = c("mur_1_1 (interieur)", "mur_1_3 (exterieur)"), col = c("red", "blue"), lwd = 2)
+
+
+
+
+
+# comparaison température au milieu des murs
+data=merge(mur_1,mur_2,by="Time",all=FALSE)
+data=merge(data,mur_sud,by="Time",all=FALSE)
+#data$Time=as.POSIXct(data$Time, format = "%Y-%m-%dT%H:%M:%S", tz = "UTC")
+#data=data[5900:21603,]
+# ajustement de la fenètre : à partir du moment où on a eu des données du mur sud (fin août 2023)
+data=data[4181:8077,]
+plot(data$Time, data$Mur_Temp_sud_2.mean, type='l', xlab='date', ylab='température (°C)', col='orange'
+     ,ylim=c(min(data$Mur_Temp_2_2.mean,na.rm=T),max(data$Mur_Temp_sud_2.mean,na.rm=T)))
+lines(data$Time, data$Mur_Temp_1_2.mean, type='l', col='blue')
+lines(data$Time, data$Mur_Temp_2_2.mean, type='l', col='green')
+legend("bottomleft", legend = c("milieu mur sud", "milieu mur 1","milieu mur 2"), col = c("orange", "blue","green"), lwd = 3)
+
+
+
+
+# Pour les pyranomètres, ci-dessous version corrigée du Sud en 2021.
+# Pour voir les vraies données (avec erreurs du capteur décroché) remplacer pyranometres_corr par pyranometres)
+
+
+pyr_14h=filter(pyranometres_corr, hour(Time) == 14) %>%
+  select(Time, Pyranometre_Sud_Wm.mean, Pyranometre_Nord_Wm.mean, Pyranometre_Est_Wm.mean,Pyranometre_Ouest_Wm.mean)
+
+pyr_14h$Day = as.Date(pyr_14h$Time)
+pyr_14h = pyr_14h[,-1]
+
+pyr_14h # les observations de pyranometres à 14h
+
+plot(pyr_14h$Day, pyr_14h$Pyranometre_Sud_Wm.mean, type='l', xlab='date', ylab='rayonnement', col='red', main='rayonnements à 14h00')
+lines(pyr_14h$Day, pyr_14h$Pyranometre_Nord_Wm.mean, type='l', col='blue')
+lines(pyr_14h$Day, pyr_14h$Pyranometre_Est_Wm.mean, type='l', col='green')
+lines(pyr_14h$Day, pyr_14h$Pyranometre_Ouest_Wm.mean, type='l', col='yellow')
+legend("topleft", legend = c("pyranomètre Sud", "pyranomètre Nord","pyranomètre Est","pyranomètre Ouest"), col = c("red", "blue","green","yellow"), lwd = 2)
+
+# regroupement moyenne par heure pour les pyrano :
+
+pyranometres_corr$Hour <- format(pyranometres_corr$Time, "%H:%M")
+
+pyranometres_heure <- pyranometres_corr %>%
+  group_by(Hour) %>%
+  summarise(Moyenne_Sud = mean(Pyranometre_Sud_Wm.mean),Moyenne_Nord = mean(Pyranometre_Nord_Wm.mean),
+            Moyenne_Est = mean(Pyranometre_Est_Wm.mean),Moyenne_Ouest = mean(Pyranometre_Ouest_Wm.mean))
+head(pyranometres_heure)
+
+pyranometres_heure$Hour <- strptime(pyranometres_heure$Hour, format = "%H:%M")
+plot(pyranometres_heure$Hour, pyranometres_heure$Moyenne_Sud , type='l', xlab='heure', ylab='moyenne du rayonnement (W/m2) sur les 5 ans', 
+     col='red', ylim=c(0,250), lwd=3, main='moyenne des rayonnements au cours de la journée',xaxt='n')
+lines(pyranometres_heure$Hour, lwd=3, pyranometres_heure$Moyenne_Nord, type='l', col='blue')
+lines(pyranometres_heure$Hour, lwd=3, pyranometres_heure$Moyenne_Est, type='l', col='green')
+lines(pyranometres_heure$Hour, lwd=3, pyranometres_heure$Moyenne_Ouest, type='l', col='yellow')
+legend("topleft", legend = c("Sud", "Nord","Est","Ouest"), col = c("red", "blue","green","yellow"), lwd = 2)
+axis.POSIXct(1, at = pyranometres_heure$Hour, labels = format(pyranometres_heure$Hour, "%H:%M"), format="%H:%M")
+
+pyranometres_corr=subset(pyranometres_corr, select = -c(Hour))  # on enleve la variable qui avait été ajoutée pour éviter les problemes ensuites
+
+
+View(convecteurs)#convecteurs$Puissance_Convecteurs_mm = ma(convecteurs$Puissance_Convecteurs,order=12*24)
+# si utilisation des données 1h, on modifie la plage de moyennes mobiles (24 au lieu de 12*24) :
+convecteurs$Puissance_Convecteurs_mm = ma(convecteurs$Puissance_Convecteurs,order=24)
+convecteurs$Time=as.Date(convecteurs$Time)
+plot(convecteurs$Time,convecteurs$Puissance_Convecteurs_mm,type='l',col='darkred',xlab='date',ylab='puissance convecteurs (W)', main='moyenne mobile puissance sur 24h')
+
+# à partir de données horraire pour obtenir des kWh : 
+convecteurs_daily=convecteurs %>%
+  group_by(Time = format(Time, "%Y-%m-%d")) %>%
+  summarise(Puissance_Convecteurs = sum(Puissance_Convecteurs, na.rm = TRUE))
+convecteurs_daily$Puissance_Convecteurs=convecteurs_daily$Puissance_Convecteurs/1000
+convecteurs_daily$Time <- as.POSIXct(convecteurs_daily$Time, format = "%Y-%m-%d")
+plot(convecteurs_daily$Time,convecteurs_daily$Puissance_Convecteurs,type='l',col='darkblue',xlab='date',ylab='energie des convecteurs (kWh)', main='énergie de chauffage quotidienne
+     (somme des puissances moyennes horraires des convecteurs chaque jour)')
+View(convecteurs_daily)
+View(convecteurs)
+str(convecteurs_daily)
+
+
+
+
+convecteurs_daily$Month <-  format(convecteurs_daily$Time, "%Y-%m")
+convecteurs_monthly=aggregate(. ~ Month, data = convecteurs_daily, FUN = function(x) sum(x, na.rm = TRUE))
+convecteurs_monthly <- tail(convecteurs_monthly, -1)
+convecteurs_monthly <- head(convecteurs_monthly, -1)
+barplot(convecteurs_monthly$Puissance_Convecteurs, col = "blue", xlab = "Mois", ylab = "Energie des convecteurs (kWh)", main = "Energie de chauffage mensuelle")
+
+str(convecteurs_monthly)
+
+library(zoo)
+
+# Convertir la colonne "Month" en format de date
+convecteurs_monthly$Month <- as.POSIXct(convecteurs_monthly$Month, format = "%Y-%m")
+
+# Tracer le graphique à barres avec la date sur l'axe des abscisses
+barplot(convecteurs_monthly$Puissance_Convecteurs, col = "blue", 
+        names.arg = convecteurs_monthly$Month, 
+        xlab = "Mois", ylab = "Energie des convecteurs (kWh)", 
+        main = "Energie de chauffage mensuelle")
+
+
+
+
+conv2$date= format(conv2$Time, "%Y-%m-%d")
+table(conv2$date)  
+View(convecteurs) #on a 288 valeurs par jours sauf les premiers jours : jusqu'à 1 valeur / seconde
+str(convecteurs)
+
+#on veut surconv7#on veut surerposer 22 sept 2019 -> 21 sept 2020 ; 22 sept 2020 -> 21 sept 2021 ; 22 sept 2021 -> 21 sept 2022 ; 22 sept 2022 -> 21 sept 2023
+library(lubridate)
+convecteurs1920 <- convecteurs %>%
+  filter(Time >= ymd("2019-09-22") & Time <= ymd("2020-09-21"))
+convecteurs1920$Puissance_Convecteurs_mm = ma(convecteurs1920$Puissance_Convecteurs,order=24)
+convecteurs1920$Time=as.Date(convecteurs1920$Time)
+
+convecteurs2021 <- convecteurs %>%
+  filter(Time >= ymd("2020-09-22") & Time <= ymd("2021-09-21"))
+convecteurs2021$Puissance_Convecteurs_mm = ma(convecteurs2021$Puissance_Convecteurs,order=24)
+convecteurs2021$Time=as.Date(convecteurs2021$Time)
+
+convecteurs2122 <- convecteurs %>%
+  filter(Time >= ymd("2021-09-22") & Time <= ymd("2022-09-21"))
+convecteurs2122$Puissance_Convecteurs_mm = ma(convecteurs2122$Puissance_Convecteurs,order=24)
+convecteurs2122$Time=as.Date(convecteurs2122$Time)
+
+convecteurs2223 <- convecteurs %>%
+  filter(Time >= ymd("2022-09-22") & Time <= ymd("2023-09-21"))
+convecteurs2223$Puissance_Convecteurs_mm = ma(convecteurs2223$Puissance_Convecteurs,order=24)
+convecteurs2223$Time=as.Date(convecteurs2223$Time)
+
+convecteurs2324 <- convecteurs %>%
+  filter(Time >= ymd("2023-09-22"))
+convecteurs2324$Puissance_Convecteurs_mm = ma(convecteurs2324$Puissance_Convecteurs,order=24)
+convecteurs2324$Time=as.Date(convecteurs2324$Time)
+
+convecteurs2223[1718:2178,2:3]<-NA  # on n'affiche pas la période décembre 2022 interpolée
+
+plot(convecteurs2223$Puissance_Convecteurs_mm,type='l',col='red', lwd=2.5, xaxt = "n",
+     xlab='',ylab='puissance convecteurs (W)', main="moyenne mobile puissance des convecteurs sur 24h d'automne à été")
+lines(convecteurs2122$Puissance_Convecteurs_mm, type='l', col='blue', lwd=2.3)
+lines(convecteurs2021$Puissance_Convecteurs_mm, type='l', col='green', lwd=2.3)
+lines(convecteurs1920$Puissance_Convecteurs_mm, type='l', col='yellow', lwd=2.3)
+lines(convecteurs2324$Puissance_Convecteurs_mm, type='l', col='darkgray', lwd=2.3)
+legend("topright", legend = c("2022-2023", "2021-2022","2020-2021","2019-2020", "2023-2024"), col = c("red", "blue","green","yellow","grey"), lwd = 2)
+#length(convecteurs2223$Puissance_Convecteurs_mm)
+convecteurs2223$DayMonth <- format(convecteurs2223$Time, "%d-%m")
+
+#axis(1, las=1, hadj = -0.2, at = c(0,90738%/%4,90738%/%2,3*(90738%/%4)), labels = c("automne","hiver","printemps","été"), cex.axis = 1.55)
+axis(1, las=1, hadj = -0.2, at = c(0,8765%/%4,8765%/%2,3*(8765%/%4)), labels = c("automne","hiver","printemps","été"), cex.axis = 1.55)
+
+
+
+# comparaison convecteurs semaine /WE :
+
+convecteurs_week <- week_data[[9]]
+convecteurs_WE <- weekend_data[[9]]
+convecteurs_week$Type <- "Semaine"
+convecteurs_WE$Type <- "Week-end"
+convecteurs_jour <- rbind(convecteurs_week, convecteurs_WE)
+means <- aggregate(Puissance_Convecteurs ~ Type, convecteurs_jour, mean)
+ggplot(convecteurs_jour, aes(x = Type, y = Puissance_Convecteurs, fill = Type)) + 
+  geom_boxplot(fill= c("cyan1","cyan3")) +
+  labs(title = "Répartition de la puissance en semaine et le week-end", y = "Puissance convecteurs (W)", x = "Type de jour") +
+  stat_summary(fun.data = mean_cl_normal, geom = "crossbar", width = 0.9, linewidth=0.3, color = "red",  data = means) +
+  theme(legend.position = "none")
+summary(convecteurs_week$Puissance_Convecteurs)
+summary(convecteurs_WE$Puissance_Convecteurs)
+
+convecteurs_jour_2022<-convecteurs_jour[format(convecteurs_jour$Time, "%Y") == "2022", ]
+convecteurs_jour_2023<-convecteurs_jour[format(convecteurs_jour$Time, "%Y") == "2023", ]
+means <- aggregate(Puissance_Convecteurs ~ Type, convecteurs_jour_2022, mean)
+ggplot(convecteurs_jour_2022, aes(x = Type, y = Puissance_Convecteurs, fill = Type)) + 
+  geom_boxplot(fill= c("cyan1","cyan3")) +
+  labs(title = "Répartition de la puissance en semaine et le week-end", y = "Puissance convecteurs (W)", x = "Type de jour") +
+  stat_summary(fun.data = mean_cl_normal, geom = "crossbar", width = 0.9, linewidth=0.3, color = "red",  data = means) +
+  theme(legend.position = "none")
+
+#même chose mais sur les hivers seulement :
+
+convecteurs_week <- winter_data_week[[9]]
+convecteurs_WE <- winter_data_weekend[[9]]
+convecteurs_week$Type <- "Semaine"
+convecteurs_WE$Type <- "Week-end"
+convecteurs_jour <- rbind(convecteurs_week, convecteurs_WE)
+convecteurs_jour<-subset(convecteurs_jour, format(Time, "%Y") %in% c("2024"))
+means <- aggregate(Puissance_Convecteurs ~ Type, convecteurs_jour, mean)
+ggplot(convecteurs_jour, aes(x = Type, y = Puissance_Convecteurs, fill = Type)) + 
+  geom_boxplot(fill= c("cyan1","cyan3")) +
+  labs(title = "Répartition de la puissance l'hiver en semaine et le week-end", y = "Puissance convecteurs (W)", x = "Type de jour") +
+  stat_summary(fun.data = mean_cl_normal, geom = "crossbar", width = 0.9, linewidth=0.3, color = "red",  data = means) +
+  theme(legend.position = "none")
+summary(convecteurs_week$Puissance_Convecteurs)
+summary(convecteurs_WE$Puissance_Convecteurs)
+
+
+
+energySansVMC=energy
+
+energySansVMC$Time<-as.Date(energySansVMC$Time)
+plot(energySansVMC$Time, energySansVMC$Energie_Convecteurs, type='l', xlab='date', ylab='énergie cumulée', col='red')
+lines(energySansVMC$Time, energySansVMC$Energie_Prises, type='l', col='blue')
+lines(energySansVMC$Time, energySansVMC$Energie_Eclairage, type='l', col='yellow')
+legend("topleft", legend = c("Convecteurs", "Prises","Eclairage"), col = c("red", "blue","yellow"), lwd = 3)
+
+
+
+
+
